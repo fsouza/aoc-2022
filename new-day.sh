@@ -22,7 +22,15 @@ function main {
 
 	echo "generating ${dir}"
 	mkdir -p "${dir}"
-	curl -sd type=java-application -d dsl=kotlin -d archive=tgz -d gradleVersion=7.6 -d projectName="${next_day}" -d packageName=dev.fsouza.aoc."${next_day}" https://gradle-initializr.cleverapps.io/starter | tar -C "${dir}" -xzf -
+	curl \
+		-s \
+		-d type=java-application \
+		-d dsl=kotlin \
+		-d archive=tgz \
+		-d gradleVersion=7.6 \
+		-d projectName="${next_day}" \
+		-d packageName=dev.fsouza.aoc."${next_day}" \
+		https://gradle-initializr.cleverapps.io/starter | tar -C "${dir}" -xzf -
 	echo "success, created ${dir}"
 }
 
