@@ -3,13 +3,12 @@
  */
 package dev.fsouza.aoc.day02;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-
 public class App {
-	public static void main(String[] args) {
-		var reader = new BufferedReader(new InputStreamReader(System.in));
-		var lines = reader.lines();
-		var numbers = lines.map((v) -> Integer.parseInt(v));
-	}
+    public String getGreeting() {
+        return "Hello World!";
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new App().getGreeting());
+    }
 }
