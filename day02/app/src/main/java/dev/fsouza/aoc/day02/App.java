@@ -9,6 +9,15 @@ public class App {
 		LOSE,
 		DRAW;
 
+		public static Result parseDesired(char option) {
+			return switch (option) {
+				case 'X' -> LOSE;
+				case 'Y' -> DRAW;
+				case 'Z' -> WIN;
+				default -> throw new IllegalStateException("invalid hand");
+			};
+		}
+
 		public int score() {
 			return switch (this) {
 				case WIN -> 6;
@@ -38,7 +47,15 @@ public class App {
 				return Result.DRAW;
 			}
 
-			return (this.beats(other)) ? Result.WIN : Result.LOSE;
+			return (this.beats() == other) ? Result.WIN : Result.LOSE;
+		}
+
+		public Hand resolve(Result result) {
+			return switch (result) {
+				case DRAW -> this;
+				case WIN -> this.losesTo();
+				case LOSE -> this.beats();
+			};
 		}
 
 		public int score() {
@@ -49,30 +66,50 @@ public class App {
 			};
 		}
 
-		private boolean beats(Hand other) {
+		private Hand beats() {
 			return switch (this) {
-				case ROCK -> other == SCISSORS;
-				case PAPER -> other == ROCK;
-				case SCISSORS -> other == PAPER;
+				case ROCK -> SCISSORS;
+				case PAPER -> ROCK;
+				case SCISSORS -> PAPER;
+			};
+		}
+
+		private Hand losesTo() {
+			return switch (this) {
+				case ROCK -> PAPER;
+				case PAPER -> SCISSORS;
+				case SCISSORS -> ROCK;
 			};
 		}
 	}
 
-	record Round(Hand npc, Hand player) {
-		public static Round parse(String line) {
-			return new Round(Hand.parse(line.charAt(0)), Hand.parse(line.charAt(2)));
+	record Round(Hand player, Result result) {
+		public static Round parsePart1(String line) {
+			final var otherHand = Hand.parse(line.charAt(0));
+			final var playerHand = Hand.parse(line.charAt(2));
+			final var result = playerHand.play(otherHand);
+			return new Round(playerHand, result);
+		}
+
+		public static Round parsePart2(String line) {
+			final var otherHand = Hand.parse(line.charAt(0));
+			final var result = Result.parseDesired(line.charAt(2));
+			final var playerHand = otherHand.resolve(result);
+			return new Round(playerHand, result);
 		}
 
 		public int score() {
-			return player.score() + player.play(npc).score();
+			return player.score() + result.score();
 		}
 	}
 
 	public static void main(String[] args) {
-		var reader = new BufferedReader(new InputStreamReader(System.in));
-		var lines = reader.lines();
-		var scores = lines.map((line) -> Round.parse(line)).map((round) -> round.score());
+		final var isPart2 = args.length > 0 && args[0].equals("part2");
+		final var reader = new BufferedReader(new InputStreamReader(System.in));
+		final var lines = reader.lines();
+		final var scores = lines.map((line) -> isPart2 ? Round.parsePart2(line) : Round.parsePart1(line))
+				.map((round) -> round.score());
 
-		System.out.printf("Part 1: %d\n", scores.reduce(0, (x, y) -> x + y));
+		System.out.println(scores.reduce(0, (x, y) -> x + y));
 	}
 }
