@@ -32,6 +32,14 @@ function main {
 		-d packageName=dev.fsouza.aoc."${next_day}" \
 		https://gradle-initializr.cleverapps.io/starter | tar -C "${dir}" -xzf -
 	echo "success, created ${dir}"
+
+	cat >>"${dir}"/app/build.gradle.kts <<EOF
+
+tasks.named<JavaExec>("run") {
+    standardInput = System.$(in)
+}
+EOF
+	rm -rf "${dir}"/app/src/test
 }
 
 main
