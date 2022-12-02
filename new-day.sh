@@ -21,25 +21,8 @@ function main {
 	dir=${my_dir}/${next_day}
 
 	echo "generating ${dir}"
-	mkdir -p "${dir}"
-	curl \
-		-s \
-		-d type=java-application \
-		-d dsl=kotlin \
-		-d archive=tgz \
-		-d gradleVersion=7.6 \
-		-d projectName="${next_day}" \
-		-d packageName=dev.fsouza.aoc."${next_day}" \
-		https://gradle-initializr.cleverapps.io/starter | tar -C "${dir}" -xzf -
-	echo "success, created ${dir}"
-
-	cat >>"${dir}"/app/build.gradle.kts <<EOF
-
-tasks.named<JavaExec>("run") {
-    standardInput = System.$(in)
-}
-EOF
-	rm -rf "${dir}"/app/src/test
+	cp -rv "${my_dir}/_template" "${dir}"
+	echo 'include("' "${next_day}" '")' >>"${my_dir}"/settings.gradle.kts
 }
 
 main

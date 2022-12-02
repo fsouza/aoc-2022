@@ -1,9 +1,9 @@
-package dev.fsouza.aoc.day02;
+package dev.fsouza.aoc;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class App {
+public class Solution {
     enum Result {
         WIN,
         LOSE,
