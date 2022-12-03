@@ -22,7 +22,7 @@ function main {
 
 	echo "generating ${dir}"
 	cp -rv "${my_dir}/_template" "${dir}"
-	echo 'include("' "${next_day}" '")' >>"${my_dir}"/settings.gradle.kts
+	echo 'include("'"${next_day}"'")' >>"${my_dir}"/settings.gradle.kts
 }
 
 main
