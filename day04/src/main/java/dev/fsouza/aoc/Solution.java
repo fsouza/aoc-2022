@@ -14,6 +14,10 @@ public class Solution {
         public boolean contains(Interval other) {
             return other.start >= start && other.end <= end;
         }
+
+        public boolean overlaps(Interval other) {
+            return (other.start >= start && other.start <= end) || (start >= other.start && start <= other.end);
+        }
     }
 
     record Assignment(Interval first, Interval second) {
@@ -26,14 +30,20 @@ public class Solution {
         public boolean isRedundant() {
             return first.contains(second) || second.contains(first);
         }
+
+        public boolean hasOverlap() {
+            return first.overlaps(second);
+        }
     }
 
     public static void main(String[] args) {
-        // final var isPart2 = args.length > 0 && args[0].equals("part2");
+        final var isPart2 = args.length > 0 && args[0].equals("part2");
         final var reader = new BufferedReader(new InputStreamReader(System.in));
         final var lines = reader.lines();
         final var assignments = lines.map(Assignment::parse);
+        final var assignmentsToCount = isPart2 ? assignments.filter(Assignment::hasOverlap)
+                : assignments.filter(Assignment::isRedundant);
 
-        System.out.println(assignments.filter(Assignment::isRedundant).count());
+        System.out.println(assignmentsToCount.count());
     }
 }
