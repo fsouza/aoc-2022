@@ -10,3 +10,4 @@
 rootProject.name = "aoc"
 include("day02")
 include("day03")
+include("day04")
