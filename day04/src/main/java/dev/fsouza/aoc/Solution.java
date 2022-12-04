@@ -16,7 +16,7 @@ public class Solution {
         }
 
         public boolean overlaps(Interval other) {
-            return other.start >= start && other.start <= end;
+            return (other.start >= start && other.start <= end) || (start >= other.start && start <= other.end);
         }
     }
 
@@ -32,7 +32,7 @@ public class Solution {
         }
 
         public boolean hasOverlap() {
-            return first.overlaps(second) || second.overlaps(first);
+            return first.overlaps(second);
         }
     }
 
