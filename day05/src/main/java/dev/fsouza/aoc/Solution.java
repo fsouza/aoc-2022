@@ -26,8 +26,8 @@ public class Solution {
         }
     }
 
-    record State(ArrayList<Stack<Character>> stacks) {
-        public static State parse(Stream<String> lines) {
+    record State(ArrayList<Stack<Character>> stacks, boolean mover9001) {
+        public static State parse(Stream<String> lines, boolean mover9001) {
             final ArrayList<LinkedList<Character>> stacks = new ArrayList<>();
             lines.map(line -> {
                 var builder = new StringBuilder();
@@ -51,7 +51,7 @@ public class Solution {
                 final var stack = new Stack<Character>();
                 items.descendingIterator().forEachRemaining(stack::push);
                 return stack;
-            }).collect(Collectors.toCollection(ArrayList::new)));
+            }).collect(Collectors.toCollection(ArrayList::new)), mover9001);
         }
 
         public String result() {
@@ -62,17 +62,21 @@ public class Solution {
         public void execute(Instruction instruction) {
             final var sourceStack = stacks.get(instruction.fromIndex());
             final var targetStack = stacks.get(instruction.toIndex());
+            final var items = new LinkedList<Character>();
             for (var i = 0; i < instruction.count(); i++) {
-                targetStack.push(sourceStack.pop());
+                items.add(sourceStack.pop());
             }
+
+            final var iterator = mover9001() ? items.descendingIterator() : items.iterator();
+            iterator.forEachRemaining(targetStack::push);
         }
     }
 
     public static void main(String[] args) {
-        // final var isPart2 = args.length > 0 && args[0].equals("part2");
+        final var isPart2 = args.length > 0 && args[0].equals("part2");
         final var reader = new BufferedReader(new InputStreamReader(System.in));
         final var stateLines = reader.lines().takeWhile(line -> !line.equals(""));
-        final var state = State.parse(stateLines);
+        final var state = State.parse(stateLines, isPart2);
         reader.lines().dropWhile(line -> line.equals("")).map(Instruction::parse).forEach(state::execute);
         System.out.println(state.result());
     }
