@@ -96,9 +96,7 @@ public class Solution {
         public void processInput() {
             while (input.hasNext()) {
                 final var commandLine = input.nextLine();
-                if (!commandLine.startsWith("$")) {
-                    throw new IllegalStateException("tried to read something that is not a command as a command");
-                }
+                assert commandLine.startsWith("$");
 
                 final var parts = commandLine.substring(2).split(" ");
                 final var command = parts[0];
@@ -127,6 +125,10 @@ public class Solution {
             return output;
         }
 
+        public int inUseSpace() {
+            return root.size();
+        }
+
         private Dir currentDir() {
             return dirStack.peek();
         }
@@ -153,13 +155,22 @@ public class Solution {
     }
 
     public static void main(String[] args) throws IOException {
-        // final var isPart2 = args.length > 0 && args[0].equals("part2");
         final var reader = new BufferedReader(new InputStreamReader(System.in));
         final var input = new Input(reader.lines());
         final var state = new State(input);
         state.processInput();
 
-        System.out.println(state.allDirs(dir -> dir.size() < 100_000).stream().map(dir -> dir.size()).reduce(0,
-                (x, y) -> x + y));
+        final var dirs = state.allDirs(dir -> dir.size() < 100_000).stream().map(dir -> dir.size());
+        System.out.printf("Part 1: %d\n", dirs.reduce(0, (x, y) -> x + y));
+
+        final var diskSpace = 70000000;
+        final var necessarySpace = 30000000;
+        final var unusedSpace = diskSpace - state.inUseSpace();
+        final var delta = necessarySpace - unusedSpace;
+        assert delta > 0;
+
+        final var dirToDelete = state.allDirs(dir -> dir.size() >= delta).stream().map(Dir::size).sorted().findFirst()
+                .get();
+        System.out.printf("Part 2: %d\n", dirToDelete);
     }
 }
