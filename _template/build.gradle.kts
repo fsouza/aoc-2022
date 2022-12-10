@@ -4,6 +4,8 @@ plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.8.0-RC"
 
+    id("com.diffplug.spotless") version "6.12.0"
+
     // Apply the application plugin to add support for building a CLI application in Java.
     application
 }
@@ -29,10 +31,15 @@ application {
     mainClass.set("dev.fsouza.aoc.SolutionKt")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
-}
+tasks.withType<KotlinCompile> { kotlinOptions.jvmTarget = "17" }
 
-tasks.named<JavaExec>("run") {
-    standardInput = System.`in`
+tasks.named<JavaExec>("run") { standardInput = System.`in` }
+
+configure<com.diffplug.gradle.spotless.SpotlessExtension> {
+    kotlin { ktfmt().dropboxStyle() }
+
+    kotlinGradle {
+        target("*.gradle.kts")
+        ktfmt().dropboxStyle()
+    }
 }
