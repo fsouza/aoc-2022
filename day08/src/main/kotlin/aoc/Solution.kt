@@ -2,7 +2,6 @@ package dev.fsouza.aoc
 
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import kotlin.streams.asSequence
 
 fun main() {
     val reader = BufferedReader(InputStreamReader(System.`in`))
