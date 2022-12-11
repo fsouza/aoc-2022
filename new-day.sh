@@ -11,7 +11,7 @@ function find_last_day {
 function find_next_day {
 	local last_day
 	last_day=$(find_last_day)
-	printf "day%02d" $((last_day + 1))
+	printf "day%02d" $((10#$last_day + 1))
 }
 
 function main {
