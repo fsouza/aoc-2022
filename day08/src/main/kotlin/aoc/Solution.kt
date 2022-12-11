@@ -81,7 +81,7 @@ fun scenicScore(grid: List<List<Int>>, row: Int, col: Int): Int {
     val westIndices =
         generateSequence(col - 1) { if (it > 0) it - 1 else null }
             .filter { it >= 0 }
-            .takeWhile { grid[row][col] < tree }
+            .takeWhile { grid[row][it] < tree }
             .toList()
 
     val northValue =
@@ -94,9 +94,8 @@ fun scenicScore(grid: List<List<Int>>, row: Int, col: Int): Int {
         if (southIndices.size > 0 && southIndices.last() < rows - 1) southIndices.size + 1
         else southIndices.size
     val westValue =
-        if (westIndices.size > 0 && westIndices.last() > 0) westIndices.size + 1 else westIndices.size
+        if (westIndices.size > 0 && westIndices.last() > 0) westIndices.size + 1
+        else westIndices.size
 
-    return sequenceOf(northValue, eastValue, southValue, westValue)
-        .filter { it > 0 }
-        .fold(1) { x, y -> x * y }
+    return northValue * eastValue * southValue * westValue
 }
